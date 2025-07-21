@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Крокот: Вестник Неведомого</title>
+    <style>
+        body {
+            background-color: #1a1a2e; /* Тёмный фон */
+            color: #e0e0e0; /* Светлый текст */
+            font-family: 'Consolas', 'Monospace', sans-serif; /* Футуристичный или моноширинный шрифт */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Скрыть возможные полосы прокрутки */
+            user-select: none; /* Запрет выделения текста */
+            -webkit-user-select: none; /* Для Safari */
+            -moz-user-select: none; /* Для Firefox */
+            -ms-user-select: none; /* Для IE/Edge */
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Легкая рамка */
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Неоновое свечение */
+            border-radius: 8px;
+            animation: pulse 2s infinite alternate; /* Легкая анимация пульсации */
+        }
+
+        @keyframes pulse {
+            from { box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); }
+            to { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+        }
+
+        #typed-text {
+            font-size: 2.2em; /* Крупный размер текста */
+            white-space: pre-wrap; /* Сохраняет пробелы и переносы строк */
+            min-height: 100px; /* Чтобы избежать "прыжков" */
+            line-height: 1.5;
+            color: #00ffff; /* Неоновый цвет текста */
+            text-shadow: 0 0 8px #00ffff; /* Эффект свечения */
+        }
+
+        #learn-more-button {
+            background-color: #ffcc00;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+
+        #learn-more-button:hover {
+            background-color: #e6b800;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.8);
+        }
+
+        #countdown {
+            margin-top: 0px; /* Убрал лишний отступ, так как кнопка уже добавила */
+            font-size: 1.8em;
+            color: #ffcc00; /* Яркий цвет для отсчёта */
+            text-shadow: 0 0 5px #ffcc00;
+            display: none; /* Изначально скрыт */
+        }
+
+        #final-message {
+            font-size: 1.5em;
+            color: #ff6666; /* Яркий цвет для финального сообщения */
+            text-shadow: 0 0 8px #ff6666;
+            margin-top: 20px;
+            display: none; /* Изначально скрыт */
+            white-space: pre-wrap; /* Сохраняет переносы строк */
+        }
+
+        .external-link {
+            margin-top: 30px;
+            font-size: 1em;
+            display: none; /* Изначально скрыт */
+        }
+
+        .external-link a {
+            color: #88ff88; /* Зелёный цвет для ссылки */
+            text-decoration: none;
+            transition: color 0.3s ease;
+            text-shadow: 0 0 5px rgba(136, 255, 136, 0.5);
+        }
+
+        .external-link a:hover {
+            color: #55ee55;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="typed-text"></div>
+
+        <button id="learn-more-button" style="display: none;">Узнать...</button>
+
+        <div id="countdown"></div>
+
+        <div id="final-message"></div>
+
+        <div class="external-link">
+            <a href="https://olyawet.github.io/Kakaya-to_fignya/" target="_blank">https://olyawet.github.io/Kakaya-to_fignya/</a>
+        </div>
+    </div>
+
+    <script>
+        const textToType = "Псевдоним от 6-7 символов, а ещё крокот появился сегодня.\n\n";
+        const finalMessageText = "Сообщение: Крокот появился 21.07.2025. Не знаю, что тут ещё написать, балуюсь с таймером. Вы ждали до 24.07.2025, чтобы узнать что будет же за сообщение";
+
+        const typedTextElement = document.getElementById('typed-text');
+        const learnMoreButton = document.getElementById('learn-more-button');
+        const countdownElement = document.getElementById('countdown');
+        const finalMessageElement = document.getElementById('final-message');
+        const externalLink = document.querySelector('.external-link');
+
+        let i = 0;
+        let typingSpeed = 70; // Скорость печатания (миллисекунды на символ)
+        let countdownInterval; // Переменная для хранения ID интервала таймера
+
+        // Учитывая текущую дату 21.07.2025, используем 24.07.2025 14:00 как целевую дату.
+        const targetDate = new Date('2025-07-24T14:00:00');
+
+        function typeWriter() {
+            if (i < textToType.length) {
+                typedTextElement.innerHTML += textToType.charAt(i);
+                i++;
+                setTimeout(typeWriter, typingSpeed);
+            } else {
+                learnMoreButton.style.display = 'block'; // Показываем кнопку после печати основного текста
+            }
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const difference = targetDate.getTime() - now.getTime();
+
+            if (difference <= 0) {
+                clearInterval(countdownInterval); // Останавливаем таймер
+                countdownElement.style.display = 'none'; // Скрываем таймер
+                finalMessageElement.innerHTML = finalMessageText; // Устанавливаем финальный текст
+                finalMessageElement.style.display = 'block'; // Показываем финальный текст
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = `До новых сообщений осталось: ${days} дней ${hours} часов ${minutes} минут ${seconds} секунд`;
+        }
+
+        // Обработчик события для кнопки "Узнать..."
+        learnMoreButton.addEventListener('click', () => {
+            learnMoreButton.style.display = 'none'; // Скрываем кнопку
+            countdownElement.style.display = 'block'; // Показываем таймер
+            externalLink.style.display = 'block'; // Показываем ссылку
+
+            // Проверяем, не прошло ли уже время, чтобы избежать запуска таймера, если дата уже истекла
+            if (new Date().getTime() < targetDate.getTime()) {
+                countdownInterval = setInterval(updateCountdown, 1000); // Запускаем обратный отсчёт
+                updateCountdown(); // Вызываем сразу, чтобы не было задержки в 1 секунду
+            } else {
+                // Если дата уже прошла, сразу показываем финальное сообщение
+                updateCountdown(); // Вызовем один раз, чтобы сработало условие difference <= 0
+            }
+        });
+
+        // Запрет копирования и контекстного меню
+        document.addEventListener('copy', (e) => {
+            e.preventDefault();
+            alert('Копирование текста на этом сайте запрещено!');
+        });
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
+        // Запускаем печатание
+        typeWriter();
+    </script>
+</body>
+</html>
